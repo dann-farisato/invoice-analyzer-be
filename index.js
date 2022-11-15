@@ -7,7 +7,6 @@ app.use(cors());
 app.use(express.json())
 app.use(router)
 
-
 app.listen(3007, () => {
     console.log('Server listnening on http://localhost:3007')
 })

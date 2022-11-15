@@ -6,5 +6,4 @@ const router = Router();
 
 router.post("/products", productController.findHSCode);
 
-
 module.exports = router;
