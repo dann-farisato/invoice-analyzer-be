@@ -9,5 +9,5 @@ app.use(router)
 
 
 app.listen(3007, () => {
-    console.log('CORS-enabled web server listening on port 3007')
+    console.log('Server listnening on http://localhost:3007')
 })
