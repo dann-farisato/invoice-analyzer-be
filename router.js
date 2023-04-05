@@ -15,6 +15,9 @@ router.post("/products", productController.findHSCode);
 
 //users routes
 router.get("/api/users", usersController.getUsers);
+router.get("/api/user/:id", usersController.getUserByID);
 router.post("/api/user", usersController.postUser);
+router.put("/api/user/:id", usersController.updateUser);
+router.delete("/api/user/:id", usersController.deleteUser);
 
 module.exports = router;
