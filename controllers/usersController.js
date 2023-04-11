@@ -1,4 +1,6 @@
 'use strict';
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const User = require('../models/user.model');
 
@@ -60,5 +62,25 @@ exports.deleteUser = async (req, res) => {
         }
     } catch (error) {
         res.status(500).json({ error });
+    }
+};
+
+exports.register = async (req, res) => {
+    try {
+        const { name, email, password } = req.body;
+        const existingUser = await User.findOne({ email });
+
+        if (existingUser) {
+            return res.status(409).send({ message: 'Email already exists' });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const user = await User.create({ name, email, password: hashedPassword });
+
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+        return res.status(201).send({ token });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send({ message: 'Internal server error' });
     }
 };
