@@ -1,38 +1,52 @@
 'use strict';
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+// const db = require('../models/user.model');
 require('dotenv').config();
 
-exports.createJWT = (user) => {
+exports.createJWT = async (user) => {
     const token = jwt.sign(
-        {
-            id: user.id,
-            email: user.email,
-        },
-        process.env.JWT_SECRET,
-        {
-            expiresIn: "1d",
-        }
+        { id: user.id, username: user.username },
+        process.env.JWT_SECRET
     );
     return token;
-}
+};
+
 exports.protect = async (req, res, next) => {
     const bearer = req.headers.authorization;
-    if (!bearer || !bearer.startsWith("Bearer ")) {
-        return res.status(401).json({ message: "Unauthorized" });
+
+    if (!bearer) {
+        res.status(401);
+        res.send("Not authorized x");
+        return;
     }
 
-    const [, token] = bearer.split("Bearer ")[1].trim();
-
+    const [, token] = bearer.split(" ");
     if (!token) {
-        return res.status(401).json({ message: "Unauthorized token" });
+        console.log("here");
+        res.status(401);
+        res.send("Not authorized");
+        return;
     }
 
     try {
-        const user = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = user;
+        const payload = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = payload;
+        console.log(payload);
         next();
-    } catch (err) {
-        console.log(err);
-        return res.status(401).json({ message: "Unauthorized User" });
+        return;
+    } catch (e) {
+        console.error(e);
+        res.status(401);
+        res.send("Not authorized");
+        return;
     }
 }
+
+exports.comparePasswords = async (password, hash) => {
+    return bcrypt.compare(password, hash);
+};
+
+exports.hashPassword = (password) => {
+    return bcrypt.hash(password, 5);
+};

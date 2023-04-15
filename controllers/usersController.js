@@ -1,6 +1,6 @@
 'use strict';
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+// const bcrypt = require('bcrypt');
+// const jwt = require('jsonwebtoken');
 
 const User = require('../models/user.model');
 
@@ -65,22 +65,40 @@ exports.deleteUser = async (req, res) => {
     }
 };
 
-exports.register = async (req, res) => {
-    try {
-        const { name, email, password } = req.body;
-        const existingUser = await User.findOne({ email });
+// exports.registerUser = async (req, res) => {
+//     try {
+//         const { username, firstName, lastName, email, password } = req.body;
+//         const existingUser = await User.findOne({ email });
 
-        if (existingUser) {
-            return res.status(409).send({ message: 'Email already exists' });
-        }
+//         if (existingUser) {
+//             return res.status(409).send({ message: 'Email already exists' });
+//         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const user = await User.create({ name, email, password: hashedPassword });
+//         const hashedPassword = await bcrypt.hash(password, 10);
+//         const user = await User.create({ username, firstName, lastName, email, password: hashedPassword });
 
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-        return res.status(201).send({ token });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).send({ message: 'Internal server error' });
-    }
-};
+//         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+//         return res.status(201).send({ token });
+//     } catch (error) {
+//         console.error(error);
+//         return res.status(500).send({ message: 'Internal server error' });
+//     }
+// };
+
+// exports.loginUser = async (req, res) => {
+//     const { email, password } = req.body;
+
+//     const user = await User.findOne({ email });
+
+//     if (!user) {
+//         return res.status(404).json({ message: 'User not found' });
+//     }
+
+//     if (password !== user.password) {
+//         return res.status(401).json({ message: 'Incorrect password' });
+//     }
+
+//     const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+//     res.json({ token });
+// };
