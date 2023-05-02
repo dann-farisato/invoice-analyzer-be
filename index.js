@@ -17,6 +17,27 @@ app.use(cors({
 app.use(express.json());
 app.use('/api', protect, router);
 
+app.get('/protected', verifyToken, (req, res) => {
+    res.json({ message: 'Protected resource' });
+});
+function verifyToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    jwt.verify(token, 'secretkey', (err, user) => {
+        if (err) {
+            return res.status(403).json({ message: 'Forbidden' });
+        }
+
+        req.user = user;
+        next();
+    });
+}
+
 app.listen(port, () => {
     console.log(`Server listnening on http://localhost:${port}`)
 })

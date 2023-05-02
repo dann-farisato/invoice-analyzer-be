@@ -1,12 +1,12 @@
 'use strict';
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 // const db = require('../models/user.model');
 require('dotenv').config();
 
 exports.createJWT = async (user) => {
     const token = jwt.sign(
-        { id: user.id, username: user.username },
+        { id: user._id, username: user.username, email: user.email },
         process.env.JWT_SECRET
     );
     return token;
