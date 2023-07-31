@@ -10,10 +10,12 @@ const secret = process.env.JWT_SECRET;
 
 const login = async (req, res) => {
     try {
-        User.findOne({ email: req.body }, (err, user) => {
+        User.findOne({ email: req.body.email }, (err, user) => {
             if (!user) {
                 res.status(401).json({ message: 'Invalid email or password', data: { email: req.body.email } });
+                return; // Return to prevent further execution
             }
+            // Rest of the code for password comparison and token creation
         });
     } catch (error) {
         console.log(error);
